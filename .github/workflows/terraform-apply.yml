@@ -24,6 +24,6 @@ jobs:
       - name: Validate Configuration
         run: terraform validate
       - name: Plan Configuration
-        run: TF_CLI_ARGS="-out=tfplan -input=false" terraform plan
-#      - name: Apply Configuration
-#        run: terraform apply
+        run: terraform plan -out=tfplan -input=false
+      - name: Apply Configuration
+        run: terraform apply -input=false tfplan
