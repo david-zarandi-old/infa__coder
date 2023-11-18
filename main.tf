@@ -50,6 +50,13 @@ resource "digitalocean_project_resources" "coder" {
     digitalocean_domain.coder.urn,
     digitalocean_loadbalancer.coder.urn
   ]
+
+  depends_on = [
+    digitalocean_kubernetes_cluster.coder,
+    digitalocean_database_cluster.coder,
+    digitalocean_domain.coder,
+    digitalocean_loadbalancer.coder
+  ]
 }
 
 resource "digitalocean_vpc" "coder" {
@@ -115,6 +122,10 @@ resource "digitalocean_loadbalancer" "coder" {
 
     certificate_name = var.CERT_NAME
   }
+
+  depends_on = [
+    digitalocean_kubernetes_cluster.coder
+  ]
 }
 
 resource "digitalocean_domain" "coder" {
@@ -128,11 +139,11 @@ resource "digitalocean_domain" "coder" {
 #  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.coder.kube_config[0].cluster_ca_certificate)
 # }
 
-resource "kubernetes_namespace" "coder" {
-  metadata {
-    name = "coder"
-  }
-}
+# resource "kubernetes_namespace" "coder" {
+#  metadata {
+#    name = "coder"
+#  }
+# }
 
 provider "helm" {
   kubernetes {
@@ -144,10 +155,11 @@ provider "helm" {
 
 resource "helm_release" "coder" {
   name = "coder"
-  namespace = kubernetes_namespace.coder.metadata.0.name
+#  namespace = kubernetes_namespace.coder.metadata.0.name
   chart = "https://github.com/coder/coder/releases/download/v${var.CODER_VERSION}/coder_helm_${var.CODER_VERSION}.tgz"
   depends_on = [
-    digitalocean_database_cluster.coder
+    digitalocean_database_cluster.coder,
+    digitalocean_kubernetes_cluster.coder
   ]
 
   set {
