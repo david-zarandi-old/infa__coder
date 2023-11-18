@@ -41,10 +41,10 @@ data "digitalocean_project" "coder" {
 resource "digitalocean_project_resources" "coder" {
   project = data.digitalocean_project.coder.id
   resources = [
-    digitalocean_vpc.coder.urn
-    digitalocean_kubernetes_cluster.coder.urn
-    digitalocean_database_cluster.coder.urn
-    digitalocean_domain.coder.urn
+    digitalocean_vpc.coder.urn,
+    digitalocean_kubernetes_cluster.coder.urn,
+    digitalocean_database_cluster.coder.urn,
+    digitalocean_domain.coder.urn,
     digitalocean_loadbalancer.coder.urn
   ]
 }
