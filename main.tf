@@ -38,6 +38,14 @@ data "digitalocean_project" "coder" {
   name = "coder"
 }
 
+resource "digitalocean_tag" "coder-controller" {
+  name = "coder-controller"
+}
+
+resource "digitalocean_tag" "coder-node" {
+  name = "coder-node"
+}
+
 resource "digitalocean_project_resources" "coder" {
   project = data.digitalocean_project.coder.id
   resources = [
@@ -67,9 +75,10 @@ resource "digitalocean_kubernetes_cluster" "coder" {
   }
 
   node_pool {
-    name = "coder-pool"
+    name = "coder-controller-pool"
     size = "s-1vcpu-2gb"
     node_count = 1
+    tags = [digitalocean_tag.coder-controller.id]
   }
 }
 
@@ -100,7 +109,10 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
 resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
   region = data.digitalocean_region.coder.slug
-  droplet_ids = [digitalocean_database_cluster.coder.node_pool.nodes[0].droplet_id]
+  droplet_tags = [
+    digitalocean_tag.coder-controller.id,
+    digitalocean_tag.coder-node.id
+  ]
 
   forwarding_rule {
     entry_port = 443
