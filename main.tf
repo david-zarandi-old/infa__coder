@@ -7,32 +7,32 @@ terraform {
   }
 }
 
-# variable "do_token" {}
-variable "do_cert_name" {
+variable "TF_VAR_DO_TOKEN" {}
+variable "TF_VAR_CERT_NAME" {
   default = "certname"
 }
-variable "app_domain" {
+variable "TF_VAR_DOMAIN" {
   default = "sub.example.eu"
 }
-variable "db_user" {
+variable "TF_VAR_DB_USER" {
   default = "coder"
 }
-variable "db_password" {
+variable "TF_VAR_DP_PASSWORD" {
   default = "password"
 }
-variable "db_database" {
+variable "TF_VAR_DB_DATABASE" {
   default = "coder"
 }
-variable "coder_version" {
+variable "TF_VAR_CODER_VERSION" {
   default = "2.4.0"
 }
 
 provider "digitalocean" {
-  token = var.do_token
+  token = var.TF_VAR_DO_TOKEN
 }
 
 data "digitalocean_certificate" "cert" {
-  name = var.do_cert_name
+  name = var.TF_VAR_CERT_NAME
 }
 
 data "digitalocean_kubernetes_versions" "coder" {
@@ -74,9 +74,9 @@ resource "digitalocean_database_cluster" "coder" {
   size = "db-s-1vcpu-1gb"
   region = data.digitalocean_region.coder
   node_count = 1
-  user = var.db_user
-  password = var.db_password
-  database = var.db_database
+  user = var.TF_VAR_DB_USER
+  password = var.TF_VAR_DP_PASSWORD
+  database = var.TF_VAR_DB_DATABASE
   private_network_uuid = digitalocean_vpc.network.id
 
   maintenance_window {
@@ -139,7 +139,7 @@ provider "helm" {
 resource "helm_release" "coder" {
   name = "coder"
   namespace = kubernetes_namespace.coder.metadata.0.name
-  chart = "https://github.com/coder/coder/releases/download/v${var.coder_version}/coder_helm_${var.coder_version}.tgz"
+  chart = "https://github.com/coder/coder/releases/download/v${var.TF_VAR_CODER_VERSION}/coder_helm_${var.TF_VAR_CODER_VERSION}.tgz"
   depends_on = [
     digitalocean_database_cluster.coder
   ]
