@@ -110,8 +110,8 @@ resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
   region = data.digitalocean_region.coder.slug
   droplet_tag = [
-    digitalocean_tag.coder-controller.id,
-    digitalocean_tag.coder-node.id
+    digitalocean_tag.coder-controller.name,
+    digitalocean_tag.coder-node.name
   ]
 
   forwarding_rule {
