@@ -84,7 +84,7 @@ resource "digitalocean_database_cluster" "coder" {
   user = var.TF_VAR_DB_USER
   password = var.TF_VAR_DP_PASSWORD
   database = var.TF_VAR_DB_DATABASE
-  private_network_uuid = digitalocean_vpc.network.id
+  private_network_uuid = digitalocean_vpc.coder.id
 
   maintenance_window {
     hour = "04:00"
@@ -102,12 +102,8 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
 }
 
 resource "digitalocean_domain" "default" {
-  name = "coder.${var.domain}"
+  name = "coder.${var.TF_VAR_DOMAIN}"
   ip_address = digitalocean_kubernetes_cluster.coder.ipv4_address
-}
-
-data "digitalocean_certificate" "coder" {
-  name = var.do_wildcard_cert_name
 }
 
 resource "digitalocean_loadbalancer" "coder" {
@@ -125,11 +121,11 @@ resource "digitalocean_loadbalancer" "coder" {
   }
 }
 
-provider "kubernetes" {
-  host = digitalocean_kubernetes_cluster.coder.endpoint
-  token = digitalocean_kubernetes_cluster.coder.kube_config[0].token
-  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.coder.kube_config[0].cluster_ca_certificate)
-}
+# provider "kubernetes" {
+#  host = digitalocean_kubernetes_cluster.coder.endpoint
+#  token = digitalocean_kubernetes_cluster.coder.kube_config[0].token
+#  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.coder.kube_config[0].cluster_ca_certificate)
+# }
 
 resource "kubernetes_namespace" "coder" {
   metadata {
@@ -138,9 +134,11 @@ resource "kubernetes_namespace" "coder" {
 }
 
 provider "helm" {
-  host = digitalocean_kubernetes_cluster.coder.endpoint
-  token = digitalocean_kubernetes_cluster.coder.kube_config[0].token
-  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.coder.kube_config[0].cluster_ca_certificate)
+  kubernetes {
+    host = digitalocean_kubernetes_cluster.coder.endpoint
+    token = digitalocean_kubernetes_cluster.coder.kube_config[0].token
+    cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.coder.kube_config[0].cluster_ca_certificate)
+  }
 }
 
 resource "helm_release" "coder" {
