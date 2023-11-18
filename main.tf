@@ -65,14 +65,12 @@ resource "digitalocean_kubernetes_cluster" "coder" {
     start_time = "04:00"
     day = "sunday"
   }
-}
 
-resource "digitalocean_kubernetes_node_pool" "coder" {
-  cluster_id = digitalocean_kubernetes_cluster.coder.id
-
-  name = "coder-pool"
-  size = "s-1vcpu-2gb"
-  node_count = 1
+  node_pool {
+    name = "coder-pool"
+    size = "s-1vcpu-2gb"
+    node_count = 1
+  }
 }
 
 resource "digitalocean_database_cluster" "coder" {
@@ -102,7 +100,7 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
 resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
   region = data.digitalocean_region.coder.slug
-  droplet_ids = [digitalocean_kubernetes_node_pool.coder.nodes[0].id]
+  droplet_ids = [digitalocean_database_cluster.coder.node_pool.nodes[0].droplet_id]
 
   forwarding_rule {
     entry_port = 443
