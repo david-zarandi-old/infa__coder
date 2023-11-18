@@ -11,7 +11,6 @@ env:
   TF_VAR_DP_PASSWORD: "${{ secrets.TF_VAR_DP_PASSWORD }}"
   TF_VAR_DB_DATABASE: "${{ secrets.TF_VAR_DB_DATABASE }}"
   TF_VAR_CODER_VERSION: "${{ vars.TF_VAR_CODER_VERSION }}"
-  CONFIG_DIRECTORY: "./"
 jobs:
   apply:
     name: Apply
@@ -21,18 +20,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: apply-upload
-        with:
-          directory: ${{ env.CONFIG_DIRECTORY }}
-      - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: apply-run
-      - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
-        id: apply
-        with:
-          run: ${{ steps.apply-run.outputs.run_id }}
-          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Init Configuration
+        run: terraform init
+      - name: Validate Configuration
+        run: terraform validate
+      - name: Apply Configuration
+        run: terraform apply
