@@ -7,23 +7,23 @@ terraform {
   }
 }
 
-variable "TF_VAR_DO_TOKEN" {
+variable "DO_TOKEN" {
   sensitive = true
 }
-variable "TF_VAR_CERT_NAME" {
+variable "CERT_NAME" {
   default = "certname"
   sensitive = true
 }
-variable "TF_VAR_DOMAIN" {
+variable "DOMAIN" {
   default = "sub.example.eu"
   sensitive = true
 }
-variable "TF_VAR_CODER_VERSION" {
+variable "CODER_VERSION" {
   default = "2.4.0"
 }
 
 provider "digitalocean" {
-  token = var.TF_VAR_DO_TOKEN
+  token = var.DO_TOKEN
 }
 
 data "digitalocean_kubernetes_versions" "coder" {
@@ -83,7 +83,7 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
 }
 
 resource "digitalocean_domain" "default" {
-  name = "coder.${var.TF_VAR_DOMAIN}"
+  name = "coder.${var.DOMAIN}"
   ip_address = digitalocean_kubernetes_cluster.coder.ipv4_address
 }
 
@@ -98,7 +98,7 @@ resource "digitalocean_loadbalancer" "coder" {
     target_port = 80
     target_protocol = "http"
 
-    certificate_name = var.TF_VAR_CERT_NAME
+    certificate_name = var.CERT_NAME
   }
 }
 
@@ -125,7 +125,7 @@ provider "helm" {
 resource "helm_release" "coder" {
   name = "coder"
   namespace = kubernetes_namespace.coder.metadata.0.name
-  chart = "https://github.com/coder/coder/releases/download/v${var.TF_VAR_CODER_VERSION}/coder_helm_${var.TF_VAR_CODER_VERSION}.tgz"
+  chart = "https://github.com/coder/coder/releases/download/v${var.CODER_VERSION}/coder_helm_${var.CODER_VERSION}.tgz"
   depends_on = [
     digitalocean_database_cluster.coder
   ]
@@ -154,7 +154,7 @@ resource "helm_release" "coder" {
   }
   set {
     name = "coder.env[2].value"
-    value = "https://coder.${var.TF_VAR_DOMAIN}"
+    value = "https://coder.${var.DOMAIN}"
   }
 
   set {
@@ -163,6 +163,6 @@ resource "helm_release" "coder" {
   }
   set {
     name = "coder.env[3].value"
-    value = "*.coder.${var.TF_VAR_DOMAIN}"
+    value = "*.coder.${var.DOMAIN}"
   }
 }
