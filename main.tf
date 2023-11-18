@@ -78,7 +78,7 @@ resource "digitalocean_database_cluster" "coder" {
   engine = "pg"
   version = "15"
   size = "db-s-1vcpu-1gb"
-  region = data.digitalocean_region.coder
+  region = data.digitalocean_region.coder.slug
   node_count = 1
   private_network_uuid = digitalocean_vpc.coder.id
 
@@ -104,7 +104,7 @@ resource "digitalocean_domain" "coder" {
 
 resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
-  region = data.digitalocean_region.coder
+  region = data.digitalocean_region.coder.slug
 
   forwarding_rule {
     entry_port = 443
