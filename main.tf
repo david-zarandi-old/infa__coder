@@ -7,21 +7,28 @@ terraform {
   }
 }
 
-variable "TF_VAR_DO_TOKEN" {}
+variable "TF_VAR_DO_TOKEN" {
+  sensitive = true
+}
 variable "TF_VAR_CERT_NAME" {
   default = "certname"
+  sensitive = true
 }
 variable "TF_VAR_DOMAIN" {
   default = "sub.example.eu"
+  sensitive = true
 }
 variable "TF_VAR_DB_USER" {
   default = "coder"
+  sensitive = true
 }
 variable "TF_VAR_DP_PASSWORD" {
   default = "password"
+  sensitive = true
 }
 variable "TF_VAR_DB_DATABASE" {
   default = "coder"
+  sensitive = true
 }
 variable "TF_VAR_CODER_VERSION" {
   default = "2.4.0"
