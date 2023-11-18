@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-variable "do_token" {}
+# variable "do_token" {}
 variable "do_cert_name" {
   default = "certname"
 }
