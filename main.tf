@@ -109,7 +109,7 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
 resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
   region = data.digitalocean_region.coder.slug
-  droplet_tags = [
+  droplet_tag = [
     digitalocean_tag.coder-controller.id,
     digitalocean_tag.coder-node.id
   ]
