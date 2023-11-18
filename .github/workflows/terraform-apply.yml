@@ -24,4 +24,4 @@ jobs:
       - name: Validate Configuration
         run: terraform validate
       - name: Apply Configuration
-        run: terraform apply -refresh-only -input=false 
+        run: terraform apply -input=false -refresh -auto-approve
