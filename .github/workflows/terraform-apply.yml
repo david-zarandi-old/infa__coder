@@ -7,13 +7,16 @@ env:
   TF_CLOUD_ORGANIZATION: "${{ secrets.TF_CLOUD_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
+  TF_CLOUD_ORGANIZATION: "${{ secrets.TF_CLOUD_ORGANIZATION }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
   TF_VAR_DO_TOKEN: "${{ secrets.TF_VAR_DO_TOKEN }}"
   TF_VAR_CERT_NAME: "${{ secrets.TF_VAR_CERT_NAME }}"
   TF_VAR_DOMAIN: "${{ secrets.TF_VAR_DOMAIN }}"
   TF_VAR_DB_USER: "${{ secrets.TF_VAR_DB_USER }}"
   TF_VAR_DP_PASSWORD: "${{ secrets.TF_VAR_DP_PASSWORD }}"
   TF_VAR_DB_DATABASE: "${{ secrets.TF_VAR_DB_DATABASE }}"
-  TF_VAR_CODER_VERSION: "${{ secrets.TF_VAR_CODER_VERSION }}"
+  TF_VAR_CODER_VERSION: "${{ vars.TF_VAR_CODER_VERSION }}"
   CONFIG_DIRECTORY: "./"
 jobs:
   apply:
