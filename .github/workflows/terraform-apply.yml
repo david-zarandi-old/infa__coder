@@ -23,7 +23,5 @@ jobs:
         run: terraform init
       - name: Validate Configuration
         run: terraform validate
-      - name: Plan Configuration
-        run: terraform plan -out=tfplan -input=false -destroy
       - name: Apply Configuration
-        run: terraform apply -input=false tfplan
+        run: terraform apply -input=false -refresh
