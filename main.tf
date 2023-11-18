@@ -8,30 +8,37 @@ terraform {
 }
 
 variable "TF_VAR_DO_TOKEN" {
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_CERT_NAME" {
   default = "certname"
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_DOMAIN" {
   default = "sub.example.eu"
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_DB_USER" {
   default = "coder"
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_DP_PASSWORD" {
   default = "password"
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_DB_DATABASE" {
   default = "coder"
+  type = "string"
   sensitive = true
 }
 variable "TF_VAR_CODER_VERSION" {
   default = "2.4.0"
+  type = "string"
 }
 
 provider "digitalocean" {
