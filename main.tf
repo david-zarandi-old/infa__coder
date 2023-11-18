@@ -26,10 +26,6 @@ provider "digitalocean" {
   token = var.TF_VAR_DO_TOKEN
 }
 
-data "digitalocean_certificate" "cert" {
-  name = var.TF_VAR_CERT_NAME
-}
-
 data "digitalocean_kubernetes_versions" "coder" {
   version_prefix = "1.28."
 }
@@ -102,7 +98,7 @@ resource "digitalocean_loadbalancer" "coder" {
     target_port = 80
     target_protocol = "http"
 
-    certificate_name = digitalocean_certificate.cert.name
+    certificate_name = var.TF_VAR_CERT_NAME
   }
 }
 
@@ -158,7 +154,7 @@ resource "helm_release" "coder" {
   }
   set {
     name = "coder.env[2].value"
-    value = "https://coder.${var.domain}"
+    value = "https://coder.${var.TF_VAR_DOMAIN}"
   }
 
   set {
@@ -167,6 +163,6 @@ resource "helm_release" "coder" {
   }
   set {
     name = "coder.env[3].value"
-    value = "*.coder.${var.domain}"
+    value = "*.coder.${var.TF_VAR_DOMAIN}"
   }
 }
