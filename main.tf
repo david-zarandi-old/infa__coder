@@ -34,14 +34,29 @@ data "digitalocean_region" "coder" {
   slug = "fra1"
 }
 
+data "digitalocean_project" "coder" {
+  name = "coder"
+}
+
+resource "digitalocean_project_resources" "coder" {
+  project = data.digitalocean_project.coder.id
+  resources = [
+    digitalocean_vpc.coder.urn
+    digitalocean_kubernetes_cluster.coder.urn
+    digitalocean_database_cluster.coder.urn
+    digitalocean_domain.coder.urn
+    digitalocean_loadbalancer.coder.urn
+  ]
+}
+
 resource "digitalocean_vpc" "coder" {
   name   = "coder-network"
-  region = data.digitalocean_region.coder
+  region = data.digitalocean_region.coder.slug
 }
 
 resource "digitalocean_kubernetes_cluster" "coder" {
   name = "coder-kubernetes-cluster"
-  region = data.digitalocean_region.coder
+  region = data.digitalocean_region.coder.slug
   auto_upgrade = true
   version = data.digitalocean_kubernetes_versions.coder.latest_version
   vpc_uuid = digitalocean_vpc.coder.id
@@ -82,7 +97,7 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
   }
 }
 
-resource "digitalocean_domain" "default" {
+resource "digitalocean_domain" "coder" {
   name = "coder.${var.DOMAIN}"
   ip_address = digitalocean_kubernetes_cluster.coder.ipv4_address
 }
