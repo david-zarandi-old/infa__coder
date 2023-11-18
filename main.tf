@@ -97,11 +97,6 @@ resource "digitalocean_database_firewall" "coder-database-fw" {
   }
 }
 
-resource "digitalocean_domain" "coder" {
-  name = "coder.${var.DOMAIN}"
-  ip_address = digitalocean_kubernetes_cluster.coder.ipv4_address
-}
-
 resource "digitalocean_loadbalancer" "coder" {
   name = "coder-loadbalancer"
   region = data.digitalocean_region.coder.slug
@@ -115,6 +110,11 @@ resource "digitalocean_loadbalancer" "coder" {
 
     certificate_name = var.CERT_NAME
   }
+}
+
+resource "digitalocean_domain" "coder" {
+  name = "coder.${var.DOMAIN}"
+  ip_address = digitalocean_loadbalancer.coder.ip
 }
 
 # provider "kubernetes" {
