@@ -18,18 +18,6 @@ variable "TF_VAR_DOMAIN" {
   default = "sub.example.eu"
   sensitive = true
 }
-variable "TF_VAR_DB_USER" {
-  default = "coder"
-  sensitive = true
-}
-variable "TF_VAR_DP_PASSWORD" {
-  default = "password"
-  sensitive = true
-}
-variable "TF_VAR_DB_DATABASE" {
-  default = "coder"
-  sensitive = true
-}
 variable "TF_VAR_CODER_VERSION" {
   default = "2.4.0"
 }
@@ -81,9 +69,6 @@ resource "digitalocean_database_cluster" "coder" {
   size = "db-s-1vcpu-1gb"
   region = data.digitalocean_region.coder
   node_count = 1
-  user = var.TF_VAR_DB_USER
-  password = var.TF_VAR_DP_PASSWORD
-  database = var.TF_VAR_DB_DATABASE
   private_network_uuid = digitalocean_vpc.coder.id
 
   maintenance_window {
