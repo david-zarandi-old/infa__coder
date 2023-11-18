@@ -23,5 +23,7 @@ jobs:
         run: terraform init
       - name: Validate Configuration
         run: terraform validate
-      - name: Apply Configuration
-        run: terraform apply
+      - name: Plan Configuration
+        run: terraform plan -refresh-only
+#      - name: Apply Configuration
+#        run: terraform apply
